@@ -12,26 +12,19 @@ namespace nQueen
     [SerializableAttribute()]
     public class Board
     {
-        public Cell[,] cells = null;
+        public bool[,] cells;
         public int Length = 0;
 
         protected Board(Board that)
         {
-            cells = (Cell[,])that.cells;
+            cells = (bool[,])that.cells;
             Length = that.Length;
         }
 
         public Board(int len)
         {
             Length = len;
-            cells = new Cell[Length, Length];
-            for (int yPos = 0; yPos < Length; yPos++)
-            {
-                for (int xPos = 0; xPos < Length; xPos++)
-                {
-                    cells[xPos, yPos] = new Cell();
-                }
-            }
+            cells = new bool[Length, Length];
         }
 
         public virtual Board Clone()
@@ -55,7 +48,7 @@ namespace nQueen
             {
                 for (int xPos = 0; xPos < Length; xPos++)
                 {
-                    if (cells[xPos, yPos].status == Cell.CellStatus.ExistQueen)
+                    if (cells[xPos, yPos])
                     {
                         boardStr += "Ｑ";
                     }

@@ -38,7 +38,7 @@ namespace nQueen
                 if ( IsEnablePutQueen(board, xPos, yPos))
                 {
                     // Queenを配置
-                    board.cells[xPos, yPos].status = Cell.CellStatus.ExistQueen;
+                    board.cells[xPos, yPos] = true;
 
                     // yPosの条件で次の列の探索をするか結果を配置するか分岐する
                     if (yPos == board.Length - 1)
@@ -53,7 +53,7 @@ namespace nQueen
                     }
                 }
                 // 現在のxPosでの探索が終わったらボードを探索前の状態に戻す
-                board.cells[xPos, yPos].status = Cell.CellStatus.Empty;
+                board.cells[xPos, yPos] = false;
             }
         }
 
@@ -69,7 +69,7 @@ namespace nQueen
             // 横ラインにQueenが存在するか確認する
             for (int x = 0; board.Length > x; x++)
             {
-                if (board.cells[x, yPos].status == Cell.CellStatus.ExistQueen)
+                if (board.cells[x, yPos])
                 {
                     return false;
                 }
@@ -77,7 +77,7 @@ namespace nQueen
             // 縦ラインにQueenが存在するか確認する
             for (int y = 0; board.Length > y; y++)
             {
-                if (board.cells[xPos, y].status == Cell.CellStatus.ExistQueen)
+                if (board.cells[xPos, y])
                 {
                     return false;
                 }
@@ -85,7 +85,7 @@ namespace nQueen
             // 右ななめ上にQueenが存在するか確認する
             for (int x = xPos + 1, y = yPos - 1; board.Length > x && y >= 0; x++, y--)
             {
-                if (board.cells[x, y].status == Cell.CellStatus.ExistQueen)
+                if (board.cells[x, y])
                 {
                     return false;
                 }
@@ -93,7 +93,7 @@ namespace nQueen
             // 右ななめ下にQueenが存在するか確認する
             for (int x = xPos + 1, y = yPos + 1; board.Length > x && board.Length > y; x++, y++)
             {
-                if (board.cells[x, y].status == Cell.CellStatus.ExistQueen)
+                if (board.cells[x, y])
                 {
                     return false;
                 }
@@ -101,7 +101,7 @@ namespace nQueen
             // 左ななめ上にQueenが存在するか確認する
             for (int x = xPos - 1, y = yPos - 1; x >= 0 && y >= 0; x--, y--)
             {
-                if (board.cells[x, y].status == Cell.CellStatus.ExistQueen)
+                if (board.cells[x, y])
                 {
                     return false;
                 }
@@ -109,7 +109,7 @@ namespace nQueen
             // 左ななめ下にQueenが存在するか確認する
             for (int x = xPos - 1, y = yPos + 1; x >= 0 && board.Length > y; x--, y++)
             {
-                if (board.cells[x, y].status == Cell.CellStatus.ExistQueen)
+                if (board.cells[x, y])
                 {
                     return false;
                 }
