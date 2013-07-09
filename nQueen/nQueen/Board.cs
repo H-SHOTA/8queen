@@ -12,22 +12,31 @@ namespace nQueen
     [SerializableAttribute()]
     public class Board
     {
+        /// <summary>
+        /// n x nのボード
+        /// </summary>
         public bool[,] cells;
+
+        /// <summary>
+        /// 一辺の長さ
+        /// </summary>
         public int Length = 0;
 
-        protected Board(Board that)
-        {
-            cells = (bool[,])that.cells;
-            Length = that.Length;
-        }
-
+        /// <summary>
+        /// コンストラクタ
+        /// </summary>
+        /// <param name="len">一辺の長さ</param>
         public Board(int len)
         {
             Length = len;
             cells = new bool[Length, Length];
         }
 
-        public virtual Board Clone()
+        /// <summary>
+        /// ボードを複製する
+        /// </summary>
+        /// <returns>複製したボード</returns>
+        public Board Clone()
         {
             object clone;
             using (MemoryStream stream = new MemoryStream())
@@ -40,6 +49,10 @@ namespace nQueen
             return clone as Board;
         }
 
+        /// <summary>
+        /// 結果を出力する
+        /// </summary>
+        /// <returns>結果</returns>
         public string GetResult()
         {
             string boardStr = "";

@@ -4,23 +4,57 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace nQueen
+namespace ConsoleApplication1
 {
-    public class nQueen
+    class Program
     {
+        static void Main(string[] args)
+        {
+            Program obj = new Program(8);
+            var list = obj.GetNQueenAnswer();
+            Console.WriteLine(obj.GetResult(list[0]));
+            Console.WriteLine("回答数：{0} 処理時間:{1}", list.Count, obj.ElapsedTime);
+        }
+        private bool[,] BaseBoard = null;
+
+        private uint Length = 0;
+
+        private ulong elapsedTime = 0;
+
+        public ulong ElapsedTime
+        {
+            get
+            {
+                return elapsedTime;
+            }
+        }
+
         /// <summary>
         /// 正解のボードのリスト
         /// </summary>
-        private List<Board> CorrectAnswerList = new List<Board>();
+        private List<bool[,]> CorrectAnswerList = new List<bool[,]>();
+
+        public Program(uint len)
+        {
+            Length = len;
+            BaseBoard = new bool[Length, Length];
+        }
 
         /// <summary>
         /// NQueenの正解リストを取得する
         /// </summary>
         /// <param name="baseBoard">初期状態のボード</param>
         /// <returns>正解のボードリスト</returns>
-        public List<Board> GetNQueenAnswer(Board baseBoard)
+        public List<bool[,]> GetNQueenAnswer()
         {
-            SearchXLine(0, baseBoard);
+            System.Diagnostics.Stopwatch watch = new System.Diagnostics.Stopwatch();
+            
+            watch.Start();
+            SearchXLine(0, BaseBoard);
+            watch.Stop();
+
+            elapsedTime = (ulong)watch.ElapsedMilliseconds;
+
             return CorrectAnswerList;
         }
 
@@ -30,21 +64,21 @@ namespace nQueen
         /// </summary>
         /// <param name="yPos">y軸の添え字</param>
         /// <param name="board">ボード</param>
-        public void SearchXLine(int yPos, Board board)
+        public void SearchXLine(int yPos, bool[,] board)
         {
-            for (int xPos = 0; xPos < board.Length; xPos++)
+            for (int xPos = 0; xPos < Length; xPos++)
             {
                 // Queenの進路上に別Queenが存在しない場合はQueen配置可能とする
-                if ( IsEnablePutQueen(board, xPos, yPos) )
+                if (IsEnablePutQueen(board, xPos, yPos))
                 {
                     // Queenを配置
-                    board.cells[xPos, yPos] = true;
+                    board[xPos, yPos] = true;
 
                     // yPosの条件で次の列の探索をするか結果を配置するか分岐する
-                    if (yPos == board.Length - 1)
+                    if (yPos == Length - 1)
                     {
                         // 正解リストにボードを加える
-                        CorrectAnswerList.Add(board.Clone());
+                        CorrectAnswerList.Add((bool[,])board.Clone());
                     }
                     else
                     {
@@ -53,7 +87,7 @@ namespace nQueen
                     }
                 }
                 // 現在のxPosでの探索が終わったらボードを探索前の状態に戻す
-                board.cells[xPos, yPos] = false;
+                board[xPos, yPos] = false;
             }
         }
 
@@ -64,36 +98,36 @@ namespace nQueen
         /// <param name="xPos">現在位置(x軸)</param>
         /// <param name="yPos">現在位置(y軸)</param>
         /// <returns>true：配置可能 false:配置不可能</returns>
-        private bool IsEnablePutQueen(Board board, int xPos, int yPos)
+        private bool IsEnablePutQueen(bool[,] board, int xPos, int yPos)
         {
             // 横ラインにQueenが存在するか確認する
-            for (int x = 0; board.Length > x; x++)
+            for (int x = 0; Length > x; x++)
             {
-                if (board.cells[x, yPos])
+                if (board[x, yPos])
                 {
                     return false;
                 }
             }
             // 縦ラインにQueenが存在するか確認する
-            for (int y = 0; board.Length > y; y++)
+            for (int y = 0; Length > y; y++)
             {
-                if (board.cells[xPos, y])
+                if (board[xPos, y])
                 {
                     return false;
                 }
             }
             // 右ななめ上にQueenが存在するか確認する
-            for (int x = xPos + 1, y = yPos - 1; board.Length > x && y >= 0; x++, y--)
+            for (int x = xPos + 1, y = yPos - 1; Length > x && y >= 0; x++, y--)
             {
-                if (board.cells[x, y])
+                if (board[x, y])
                 {
                     return false;
                 }
             }
             // 右ななめ下にQueenが存在するか確認する
-            for (int x = xPos + 1, y = yPos + 1; board.Length > x && board.Length > y; x++, y++)
+            for (int x = xPos + 1, y = yPos + 1; Length > x && Length > y; x++, y++)
             {
-                if (board.cells[x, y])
+                if (board[x, y])
                 {
                     return false;
                 }
@@ -101,20 +135,47 @@ namespace nQueen
             // 左ななめ上にQueenが存在するか確認する
             for (int x = xPos - 1, y = yPos - 1; x >= 0 && y >= 0; x--, y--)
             {
-                if (board.cells[x, y])
+                if (board[x, y])
                 {
                     return false;
                 }
             }
             // 左ななめ下にQueenが存在するか確認する
-            for (int x = xPos - 1, y = yPos + 1; x >= 0 && board.Length > y; x--, y++)
+            for (int x = xPos - 1, y = yPos + 1; x >= 0 && Length > y; x--, y++)
             {
-                if (board.cells[x, y])
+                if (board[x, y])
                 {
                     return false;
                 }
             }
             return true;
+        }
+
+        /// <summary>
+        /// 結果を出力する
+        /// </summary>
+        /// <param name="board">ボード</param>
+        /// <returns>結果</returns>
+        public string GetResult(bool[,] board)
+        {
+            string boardStr = "";
+
+            for (int yPos = 0; yPos < Length; yPos++)
+            {
+                for (int xPos = 0; xPos < Length; xPos++)
+                {
+                    if (board[xPos, yPos])
+                    {
+                        boardStr += "Ｑ";
+                    }
+                    else
+                    {
+                        boardStr += "・";
+                    }
+                }
+                boardStr += "\n";
+            }
+            return boardStr;
         }
     }
 }
