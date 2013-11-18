@@ -1,4 +1,4 @@
-Himatsubushi
+8queen
 ============
 
 暇つぶし用
